@@ -1,0 +1,195 @@
+# 排序算法
+
+最近面试经常问到排序算法，部分排序算法了解的不是很清晰，在这里对常用的排序算法整理一下
+
+## 1.冒泡排序
+
+从头开始遍历，每相邻的两个数进行比较，如果符合条件，交换，继续遍历
+
+```markdown
+void bubbleSort(vector<int>& value)
+{
+	for (int i = 0; i < value.size()-1; i++)
+	{
+		for (int j = 0; j < value.size()-i-1; i++)
+		{
+			if (value[j] > value[j+1])
+			{
+				swap(value[j], value[j+1]);
+			}
+		}
+	}
+}
+```
+## 时间复杂度
+最坏：数组从大到小排序 o(n*2)\n
+最好：数组有序，只需遍历一次O(N)\n
+
+## 2.选择排序法
+
+### 算法步骤
+在未排序的序列中找到最小(大)值，置于队列的起始位置
+再从剩余未排序序列中找到最小(大)值，置于已排序序列末尾
+重复第二部，直到排序结束
+
+### 时间复杂度：
+无论序列是否有序，都需要全部遍历找到最小（大）值，复杂度固定为o(n*n)
+
+```
+void selectSort(vector<int>& value)
+{
+	int min = 0;
+	for (int i = 0; i < value.size(); i++)
+	{
+		min = i;  //纪录起始位置
+		for (int j = i + 1; j < value.size(); j++)
+		{
+			if (value[j] < value[min])
+			{
+				min = j; //纪录更小的位置
+			}
+		}
+    swap(value[i], value[min]); //遍历完后交换
+	}
+}
+```
+## 插入排序
+
+### 算法步骤
+将数组的第一个数认为是有序数组，从后往前（从前往后）扫描该有序数组，把数组中其余n-1个数，根据数值的大小，插入到有序数组中，直至数组中的所有数有序排列为止。这样的话，n个元素需要进行n-1趟排序
+
+### 时间复杂度
+需先进行一趟比较，再进行一趟比较交换，平均时间复杂度为O(n^2);
+
+```
+void insertSort(vector<int>& value)
+{
+	int sentry; //哨兵
+	int i, j;
+	int len = value.size();
+
+	for (int i = 1; i < len; i++)  //从数组中的第二个数开始比较
+	{
+		if (value[i] < value[i - 1])
+		{
+			sentry = value[i];
+			for (j = i - 1; j >= 0; j--)
+			{
+				if(sentry < value[j])
+				{
+				    data[j + 1] = data[j];
+				}
+			}
+			data[j + 1] = sentry; 
+		}
+	}
+}
+```
+## 折半插入排序
+
+### 算法步骤
+采用二分法，找到当前待排序值在已有序队列中的位置，然后进行移动操作
+
+### 时间复杂度
+因为数据也需要进行两次调整，平均时间复杂度也为O(n^2)
+
+```
+void bInsertSort(vector<int>& value)
+{
+	int sentry;
+	int i, j;
+	int len = value.size();
+
+	for (i = 1; i < len; i++)
+	{
+		sentry = value[i];
+		low = 0;
+		hight = i - 1;
+		while (low < hight)
+		{
+			int middle = (low + hight) / 2;
+			if (sentry > value[middle])
+				low = middle + 1;
+			else
+				higt = middle -1;
+		}
+
+		for (j = i - 1; j >= high + 1; j--) {
+			value[j + 1] = value[j];
+		}
+
+		value[j + 1] = value;
+	}
+}
+```
+## 希尔排序（缩小增量排序）
+
+### 算法步骤
+直接插入排序时，待插入数在有序数列中需要逐次交换位置，数据量较多时效率低下，
+
+### 增量序列
+我们来看下希尔排序的基本步骤，在此我们选择增量gap=length/2，缩小增量继续以gap = gap/2的方式，这种增量选择我们可以用一个序列来表示，{n/2,(n/2)/2...1}，称为增量序列。希尔排序的增量序列的选择与证明是个数学难题，我们选择的这个增量序列是比较常用的，也是希尔建议的增量，称为希尔增量，但其实这个增量序列不是最优的。此处我们做示例使用希尔增量。
+
+### 代码实现
+
+```
+#include<iostream>
+using namespace std;
+
+void ShowArr(int arr[], int length)
+{
+    if (arr == nullptr || length <= 0)
+        return;
+    for (int i = 0; i < length; i++)
+    {
+        cout << arr[i] << "\t";
+    }
+    cout << endl;
+}
+
+void ShellSort(int arr[], int length)
+{
+    if (arr == NULL || length <= 0)
+        return;
+    int step = length;
+    while (step > 1)
+    {
+        step = step / 3 + 1;
+        for (int i = step; i < length; i++)
+        {
+            int temp = arr[i];
+            if (arr[i] < arr[i - step])
+            {
+                int j;
+                for (j = i - step; j >= 0 && arr[j] > temp; j = j - step)
+                {
+                    arr[j + step] = arr[j];
+                }
+                arr[j + step] = temp;
+            }
+        }
+    }
+}
+
+int main()
+{
+    int arr[] = { 592,401,874,141,348,72,91,887,820,283 };
+    int length = sizeof(arr) / sizeof(int);
+    ShowArr(arr, length);
+    ShellSort(arr, length);
+    ShowArr(arr, length);
+
+    system("pause");
+    return 0;
+}
+```
+
+For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+
+### Jekyll Themes
+
+Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/liuhao112/-/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+
+### Support or Contact
+
+Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
