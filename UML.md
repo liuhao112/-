@@ -39,6 +39,8 @@
 - 通俗讲，一个类定义接口，另一个类实现操作，就是实现关系
 - 典型的C++的纯虚函数的实现
 - 侧重点是接口与重写或实现
+  
+  <img src="https://github.com/liuhao112/sort/assets/26380944/bda41dee-52d7-4f8a-bbed-bfd99a4b057a" width="400" height="100" alt="image">
 
 ### 区分实现和泛化
 **泛化关系：**
